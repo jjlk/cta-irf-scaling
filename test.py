@@ -1,14 +1,30 @@
 import os
-import argparse
+from os import listdir
+from os.path import isfile, join
 import yaml
 
 from caldb_scaler_pointlike import CalDB
 
+# Load configuration file
 config = yaml.load(open('myconfig.cfg', 'r'))
 
-os.environ['CALDB'] = '/Users/julien/Documents/WorkingDir/Tools/python/gpropa_paper/irf/'
+# 'DB' Input directory
+caldb = config['general']['caldb']
+os.environ['CALDB'] = caldb
 
-caldb = CalDB('irf_south', 'CTA-Performance-South-20deg-S-05h_20170627.fits.gz', verbose=True)
+# IRF repository of interest
+irf_indir = config['general']['irf_indir']
+
+# List all files in directory
+file_list = [f for f in listdir(join(caldb, irf_indir)) if isfile(join(caldb, irf_indir, f))]
+
+# Only on file for test
+filetest = file_list[0]
+
+# Initialise caldb
+caldb = CalDB('irf_south', filetest, verbose=True)
+
+# Scale IRFs
 caldb.scale_irf(config)
 
 
