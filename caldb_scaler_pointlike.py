@@ -41,10 +41,7 @@ class CalDB:
         self.am_ok = True
 
         self._aeff = dict()
-        self._psf = dict()
         self._edips = dict()
-
-        # self._check_available_irfs()
 
         self.input_irf_file_name = '{path:s}/{caldb:s}/{irf:s}'.format(
             path=self.caldb_path,
@@ -136,9 +133,6 @@ class CalDB:
 
             if not os.path.exists(output_path):
                 os.makedirs(output_path)
-
-            from IPython import embed
-            embed()
 
             # Writing the scaled IRF
             input_irf_file.writeto(output_path + "/" + self.irf, overwrite=True)
@@ -315,7 +309,6 @@ class CalDB:
         # Constant error function
         if config['energy_scaling']['err_func_type'] == "constant":
             self._edisp['Matrix_new'] = self._edisp['Matrix_'] * config['energy_scaling']['constant']['scale']
-            print('salut')
 
         # Gradients error function
         elif config['energy_scaling']['err_func_type'] == "gradient":
@@ -338,11 +331,7 @@ class CalDB:
                              .format(config['energy_scaling']['err_func_type'])
             )
 
-        from IPython import embed
-        embed()
-
         # ------------------------------------------
         # Recording the scaled Matrix
         input_irf_file['ENERGY DISPERSION'].data['MATRIX'][0] = self._edisp['Matrix_new'].transpose()
-        #input_irf_file['ENERGY DISPERSION'].data['MATRIX'] = self._edisp['Matrix_new'].transpose()
     # ------------------------------------------
